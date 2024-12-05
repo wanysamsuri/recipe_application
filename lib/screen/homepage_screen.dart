@@ -72,60 +72,91 @@ class _HomePageState extends State<HomePage> {
                 color: const Color.fromARGB(255, 241, 245, 234),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: selectedDish?.title ?? "Select a dish",
-                items: [
-                  DropdownMenuItem<String>(
-                    value: "Select a dish",
-                    child:
-                        Text("Select a dish", style: TextStyle(fontSize: 12)),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: selectedDish?.title ?? "Select a dish",
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: "Select a dish",
+                          child: Text("Select a dish",
+                              style: TextStyle(fontSize: 12)),
+                        ),
+                        ...dishes.map((dish) {
+                          return DropdownMenuItem<String>(
+                            value: dish.title,
+                            child: Text(dish.title,
+                                style: TextStyle(fontSize: 12)),
+                          );
+                        }).toList(),
+                      ],
+                      onChanged: (title) {
+                        setState(() {
+                          if (title == "Select a dish") {
+                            selectedDish = null;
+                          } else {
+                            selectedDish = dishes
+                                .firstWhere((dish) => dish.title == title);
+                          }
+                        });
+                      },
+                      underline: SizedBox.shrink(),
+                    ),
                   ),
-                  ...dishes.map((dish) {
-                    return DropdownMenuItem<String>(
-                      value: dish.title,
-                      child: Text(dish.title, style: TextStyle(fontSize: 12)),
-                    );
-                  }).toList(),
+                  SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedDish = null;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      // padding:
+                      //     EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      backgroundColor: Colors.redAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    child: Text(
+                      'Reset',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ],
-                onChanged: (title) {
-                  setState(() {
-                    if (title == "Select a dish") {
-                      selectedDish =
-                          null; // Reset the selected dish if "Select a dish" is chosen
-                    } else {
-                      selectedDish =
-                          dishes.firstWhere((dish) => dish.title == title);
-                    }
-                  });
-                },
-                underline: SizedBox.shrink(),
               ),
             ),
+
             SizedBox(
               height: 20,
             ),
-
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: dishes.length,
+              itemCount: selectedDish == null
+                  ? dishes.length
+                  : 1, // Show 1 if selected
               itemBuilder: (context, index) {
-                final dish = dishes[index];
+                final dish =
+                    selectedDish ?? dishes[index]; // Show all or selected
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                   child: Container(
                     decoration: BoxDecoration(
                       color: selectedDish?.title == dish.title
-                          ? sixthColor
+                          ? primaryColor
                           : primaryColor,
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: selectedDish?.title == dish.title
-                            ? primaryColor
-                            : Colors.transparent,
-                        width: 2,
-                      ),
+                      // border: Border.all(
+                      //   color: selectedDish?.title == dish.title
+                      //       ? primaryColor
+                      //       : Colors.transparent,
+                      //   width: 2,
+                      // ),
                     ),
                     child: ListTile(
                       leading: Image.network(
@@ -163,9 +194,13 @@ class _HomePageState extends State<HomePage> {
 
                               if (updatedDish != null) {
                                 setState(() {
-                                  dishes[index] = updatedDish;
                                   if (selectedDish?.title == dish.title) {
                                     selectedDish = updatedDish;
+                                  }
+                                  final index = dishes.indexWhere(
+                                      (d) => d.title == updatedDish.title);
+                                  if (index != -1) {
+                                    dishes[index] = updatedDish;
                                   }
                                 });
                               }
@@ -174,7 +209,12 @@ class _HomePageState extends State<HomePage> {
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () {
-                              _deleteDish(dish);
+                              setState(() {
+                                dishes.remove(dish);
+                                if (selectedDish?.title == dish.title) {
+                                  selectedDish = null;
+                                }
+                              });
                             },
                           ),
                         ],
@@ -183,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               },
-            )
+            ),
           ],
         ),
       ),
