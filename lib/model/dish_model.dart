@@ -17,7 +17,7 @@ class Dish {
 }
 
 List<Dish> allDishes = [
-  Dish(
+  const Dish(
     title: 'Spicy Creamy Pasta with Chicken Fillet',
     urlImg:
         'https://resepichenom.com/media/Creamy_Pasta_Pedas_Bersama_Fillet_Ayam_thumb_thumb.jpg',
@@ -30,7 +30,7 @@ List<Dish> allDishes = [
     ],
     steps: [],
   ),
-  Dish(
+  const Dish(
     title: 'Donut',
     urlImg:
         'https://resepichenom.com/media/cache/d9/6b/d96bf177583ec51596678184a3fc6cb4.jpg',
@@ -43,7 +43,7 @@ List<Dish> allDishes = [
     ],
     steps: [],
   ),
-  Dish(
+  const Dish(
     title: 'Popia',
     urlImg:
         'https://resepichenom.com/media/cache/32/a8/32a866a304f7df27b342900279ed0117.jpg',
@@ -55,7 +55,7 @@ List<Dish> allDishes = [
     ],
     steps: [],
   ),
-  Dish(
+  const Dish(
     title: 'Daging Black Pepper',
     urlImg:
         'https://resepichenom.com/media/Daging_Black_Pepper_thumb_thumb.jpg',
@@ -82,7 +82,7 @@ List<Dish> allDishes = [
     ],
     steps: [],
   ),
-  Dish(
+  const Dish(
     title: 'Double Chocolate Chips Muffin',
     urlImg: 'https://resepichenom.com/media/Double_Chocolate_Chip_Muffin.webp',
     timePrep: '40 mins',
