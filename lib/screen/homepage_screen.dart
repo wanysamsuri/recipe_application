@@ -16,8 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final controller = TextEditingController();
   List<Dish> dishes = List.from(allDishes);
-  List<String> items = ['Item 1', 'Item 2', 'Item 3'];
-  String? selectedItem;
+  String? selectedDishTitle;
+  Dish? selectedDish;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            // Search Bar
             Container(
               margin: const EdgeInsets.all(16),
               child: TextField(
@@ -59,29 +60,34 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             FoodPageBody(dishes: dishes),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
+            Text('Others'),
+            SizedBox(height: 10),
+
             Container(
-              child: Text('Others'),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 241, 245, 234),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: DropdownButton<String>(
+                value: selectedDish?.title, // Show the selected dish's title
+                items: dishes.map((dish) {
+                  return DropdownMenuItem<String>(
+                    value: dish.title,
+                    child: Text(dish.title, style: TextStyle(fontSize: 12)),
+                  );
+                }).toList(),
+                onChanged: (title) {
+                  setState(() {
+                    // Update the selected dish based on title
+                    selectedDish =
+                        dishes.firstWhere((dish) => dish.title == title);
+                  });
+                },
+              ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-                padding: EdgeInsets.all(10),
-                child: DropdownButton<String>(
-                    value: selectedItem,
-                    items: items
-                        .map((item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(
-                                item,
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (item) => setState(() => selectedItem = item))),
+
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -92,8 +98,16 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 241, 245, 234),
+                      color: selectedDish?.title == dish.title
+                          ? sixthColor
+                          : primaryColor,
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selectedDish?.title == dish.title
+                            ? primaryColor
+                            : Colors.transparent,
+                        width: 2,
+                      ),
                     ),
                     child: ListTile(
                       leading: Image.network(
@@ -103,10 +117,18 @@ class _HomePageState extends State<HomePage> {
                         height: 50,
                       ),
                       title: Text(dish.title),
-                      onTap: () => Navigator.push(
+                      onTap: () {
+                        setState(() {
+                          selectedDish = dish;
+                        });
+
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DishPage(dish: dish))),
+                            builder: (context) => DishPage(dish: dish),
+                          ),
+                        );
+                      },
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -124,6 +146,9 @@ class _HomePageState extends State<HomePage> {
                               if (updatedDish != null) {
                                 setState(() {
                                   dishes[index] = updatedDish;
+                                  if (selectedDish?.title == dish.title) {
+                                    selectedDish = updatedDish;
+                                  }
                                 });
                               }
                             },
@@ -140,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               },
-            ),
+            )
           ],
         ),
       ),
@@ -158,7 +183,7 @@ class _HomePageState extends State<HomePage> {
           });
         },
         child: Icon(Icons.add),
-        backgroundColor: primaryColor,
+        backgroundColor: sixthColor,
         tooltip: 'Add Recipe',
       ),
     );

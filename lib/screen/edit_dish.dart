@@ -46,7 +46,7 @@ class _EditRecipePageState extends State<EditRecipePage> {
       steps: widget.dish.steps, // Assuming no change in steps
     );
 
-    Navigator.pop(context, updatedDish);
+    Navigator.pop(context, updatedDish); // Return updated dish to HomePage
   }
 
   @override
