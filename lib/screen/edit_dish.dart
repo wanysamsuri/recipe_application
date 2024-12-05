@@ -39,14 +39,14 @@ class _EditRecipePageState extends State<EditRecipePage> {
   void saveChanges() {
     final updatedDish = Dish(
       title: titleController.text,
-      urlImg: widget.dish.urlImg, // Keeping the same image URL
+      urlImg: widget.dish.urlImg,
       timePrep: timeController.text,
       ingredients:
           ingredientControllers.map((controller) => controller.text).toList(),
-      steps: widget.dish.steps, // Assuming no change in steps
+      steps: widget.dish.steps,
     );
 
-    Navigator.pop(context, updatedDish); // Return updated dish to HomePage
+    Navigator.pop(context, updatedDish);
   }
 
   @override
@@ -96,26 +96,24 @@ class _EditRecipePageState extends State<EditRecipePage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Create a new Dish object using the input data
                   final updatedDish = Dish(
-                    title: titleController.text, // Title from the controller
-                    urlImg: widget.dish.urlImg, // Keeping the same image URL
+                    title: titleController.text,
+                    urlImg: widget.dish.urlImg,
                     ingredients: ingredientControllers
                         .map((controller) => controller.text)
-                        .toList(), // List of ingredients
-                    steps: widget.dish.steps, // Keeping the same steps
-                    timePrep: timeController.text, // Time from the controller
+                        .toList(),
+                    steps: widget.dish.steps,
+                    timePrep: timeController.text,
                   );
 
-                  // Pop the current screen and pass the updated dish back
                   Navigator.pop(context, updatedDish);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor, // Set the background color
+                  backgroundColor: primaryColor,
                 ),
                 child: Text(
-                  'Save Changes', // Text displayed on the button
-                  style: TextStyle(color: secondaryColor), // Set text color
+                  'Save Changes',
+                  style: TextStyle(color: secondaryColor),
                 ),
               ),
             ],

@@ -66,26 +66,44 @@ class _HomePageState extends State<HomePage> {
 
             Container(
               padding: EdgeInsets.all(10),
+              width: 300,
+              height: 50,
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 241, 245, 234),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton<String>(
-                value: selectedDish?.title, // Show the selected dish's title
-                items: dishes.map((dish) {
-                  return DropdownMenuItem<String>(
-                    value: dish.title,
-                    child: Text(dish.title, style: TextStyle(fontSize: 12)),
-                  );
-                }).toList(),
+                isExpanded: true,
+                value: selectedDish?.title ?? "Select a dish",
+                items: [
+                  DropdownMenuItem<String>(
+                    value: "Select a dish",
+                    child:
+                        Text("Select a dish", style: TextStyle(fontSize: 12)),
+                  ),
+                  ...dishes.map((dish) {
+                    return DropdownMenuItem<String>(
+                      value: dish.title,
+                      child: Text(dish.title, style: TextStyle(fontSize: 12)),
+                    );
+                  }).toList(),
+                ],
                 onChanged: (title) {
                   setState(() {
-                    // Update the selected dish based on title
-                    selectedDish =
-                        dishes.firstWhere((dish) => dish.title == title);
+                    if (title == "Select a dish") {
+                      selectedDish =
+                          null; // Reset the selected dish if "Select a dish" is chosen
+                    } else {
+                      selectedDish =
+                          dishes.firstWhere((dish) => dish.title == title);
+                    }
                   });
                 },
+                underline: SizedBox.shrink(),
               ),
+            ),
+            SizedBox(
+              height: 20,
             ),
 
             ListView.builder(
