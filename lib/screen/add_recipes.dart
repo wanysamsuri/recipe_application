@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_application/model/dish_model.dart';
-import 'package:recipe_application/utils/constant.dart'; // Make sure `allDishes` is mutable
+import 'package:recipe_application/utils/constant.dart';
 
 class AddRecipePage extends StatefulWidget {
   @override

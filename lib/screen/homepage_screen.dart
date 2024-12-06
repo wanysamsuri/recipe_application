@@ -51,14 +51,28 @@ class _HomePageState extends State<HomePage> {
               child: TextField(
                 controller: controller,
                 decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: 'Dish Name',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: primaryColor))),
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: controller.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () {
+                            setState(() {
+                              controller.clear();
+                              dishes = List.from(allDishes);
+                            });
+                          },
+                        )
+                      : null,
+                  hintText: 'Dish Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: primaryColor),
+                  ),
+                ),
                 onChanged: searchDish,
               ),
             ),
+
             FoodPageBody(dishes: dishes),
             SizedBox(height: 10),
             Text('Others'),
@@ -115,16 +129,13 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       // padding:
                       //     EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      backgroundColor: Colors.redAccent,
+                      backgroundColor: seventhColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
                     ),
                     child: Text(
                       'Reset',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
                     ),
                   ),
                 ],
@@ -137,12 +148,9 @@ class _HomePageState extends State<HomePage> {
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: selectedDish == null
-                  ? dishes.length
-                  : 1, // Show 1 if selected
+              itemCount: selectedDish == null ? dishes.length : 1,
               itemBuilder: (context, index) {
-                final dish =
-                    selectedDish ?? dishes[index]; // Show all or selected
+                final dish = selectedDish ?? dishes[index];
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                   child: Container(
@@ -197,8 +205,9 @@ class _HomePageState extends State<HomePage> {
                                   if (selectedDish?.title == dish.title) {
                                     selectedDish = updatedDish;
                                   }
-                                  final index = dishes.indexWhere(
-                                      (d) => d.title == updatedDish.title);
+
+                                  final index = dishes
+                                      .indexWhere((d) => d.title == dish.title);
                                   if (index != -1) {
                                     dishes[index] = updatedDish;
                                   }
